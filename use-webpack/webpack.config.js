@@ -1,18 +1,30 @@
 const { resolve } = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const CopyPlugin = require('copy-webpack-plugin')
+const TerserJSPlugin = require("terser-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 
 module.exports =  {
+  mode: 'production',
   entry: './src/index.js',
   output: {
     path: resolve(__dirname, 'dist'),
     filename: 'bundle.js'
   },
+  optimization: {
+    minimizer: [
+      new TerserJSPlugin({}),
+      new OptimizeCSSAssetsPlugin({})
+    ]
+  },
   module: {
     rules: [
       {
         test: /\.(scss|sass)$/,
-        use: ['style-loader', 'css-loader', 'sass-loader']
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
       },
       {
         test: /\.(png|jpg|svg|gif)/,
@@ -26,6 +38,10 @@ module.exports =  {
       {
         test: /\.(woff|woff2|eot|ttf|otf)$/,
         use: ['file-loader']
+      },
+      {
+        test: /\.js$/,
+        use: 'babel-loader'
       }
     ]
   },
@@ -34,7 +50,17 @@ module.exports =  {
       filename: 'index.html',
       template: './public/index.html'
     }),
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin(),
+    new CleanWebpackPlugin(),
+    new CopyPlugin({
+      patterns: [
+        { from: './public', to: './public' }
+      ]
+    }),
+    new MiniCssExtractPlugin({
+      filename: "[name].css",
+      chunkFilename: "[id].css"
+    })
   ],
   devServer: {
     hot: true,

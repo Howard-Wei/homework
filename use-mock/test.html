@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/Mock.js/1.0.1-beta3/mock-min.js"></script>
+
+    <script>
+      Mock.mock(/.*\/lists.*/, (options) => {  
+        let data = {}
+        console.log(options)
+        let arr = options.url.split('?')
+        if (arr.length > 1) {
+          arr = arr[1].split('&')
+        } else {
+          arr = []
+        }
+        arr.forEach((item) => {
+          let res = item.split('=')
+          data[res[0]] = res[1]
+        })
+
+        return Mock.mock({
+          status: 0,
+          [`data|${data.num}`]: [{
+            "tid": "@id",
+            "title": "@title",
+            "catalog": "index",
+            "fav": "@integer(1,1000)",
+            "created": "@datetime()",
+            "isEnd": "0",
+            "answer": "@integer(1,1000)",
+            "user": {
+              "avatar": "@image",
+              "name": "@cname",
+              "isVip": "1",
+              "level": "@integer(0,10)"
+            }
+          }],
+          msg: '返回Mock数据'
+        })
+      })
+      window.addEventListener('load', () => {
+        document.querySelector('#btn').addEventListener('click', () => {
+          let page = document.querySelector('#page').value ? document.querySelector('#page').value : 1
+          let num = document.querySelector('#num').value ? document.querySelector('#num').value : 10
+          $.ajax({
+            url: '/lists',
+            data: {
+              num,
+              page
+            },
+            success(data) {
+              document.querySelector('#content').innerHTML = data
+            }
+          })
+        })
+      })
+    </script>
+  </head>
+  <body>
+    <label>页码：<input type="text" id="page" /></label>
+    <label>数量：<input type="text" id="num" /></label>
+    <button id="btn">请求数据</button>
+    <pre id="content"></pre>
+  </body>
+</html>

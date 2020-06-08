@@ -21,8 +21,7 @@ app.use(async(ctx, next) => {
 })
 
 router.post('/user', async(ctx) => {
-  let { header } = ctx.request
-  let { name, email } = ctx.request.body
+  let { header, body: {name, email} } = ctx.request
   // 鉴权
   if (!header.role || header.role !== 'admin') {
     return ctx.body = {

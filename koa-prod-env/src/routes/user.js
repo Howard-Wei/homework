@@ -1,17 +1,9 @@
 import Router from 'koa-router'
+import userController from '../api/userController'
 const router = new Router({
   prefix: '/user'
 })
 
-router.get('/:name', (ctx) => {
-  console.log(ctx.params)
-  ctx.body = {
-    code: 1,
-    data: {
-      name: 'weihanwei',
-      age: 25
-    }
-  }
-})
+router.get('/:name', userController.info)
 
 export default router

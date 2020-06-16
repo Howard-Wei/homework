@@ -4,6 +4,6 @@ const router = new Router({
   prefix: '/login'
 })
 
-router.post('/getCaptcha', loginController.getCaptcha)
+router.post('/forget', loginController.sendMail)
 
 export default router

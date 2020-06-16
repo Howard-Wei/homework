@@ -64,83 +64,80 @@
           -->
 
             <div class="layui-form layui-form-pane">
-              <form>
-                <validation-provider
-                  v-slot="{errors}"
-                  rules="required|email"
-                >
-                  <div :class="['layui-form-item', {'no-margin': errors[0]}]">
-                    <label
-                      for="username"
-                      class="layui-form-label"
-                    >用户名</label>
-                    <div class="layui-input-inline">
-                      <input
-                        id="username"
-                        v-model="username"
-                        type="text"
-                        name="username"
-                        placeholder="请输入用户名"
-                        autocomplete="off"
-                        class="layui-input"
-                      >
-                    </div>
-                    <div
-                      v-show="errors[0]"
-                      class="error"
+              <validation-provider
+                v-slot="{errors}"
+                rules="required|email"
+              >
+                <div :class="['layui-form-item', {'no-margin': errors[0]}]">
+                  <label
+                    for="username"
+                    class="layui-form-label"
+                  >用户名</label>
+                  <div class="layui-input-inline">
+                    <input
+                      id="username"
+                      v-model="username"
+                      type="text"
+                      name="username"
+                      placeholder="请输入用户名"
+                      autocomplete="off"
+                      class="layui-input"
                     >
-                      {{ errors[0] }}
-                    </div>
                   </div>
-                </validation-provider>
-                <validation-provider
-                  v-slot="{errors}"
-                  rules="required|length:4"
-                >
-                  <div :class="['layui-form-item', {'no-margin': errors[0]}]">
-                    <label
-                      for="vercode"
-                      class="layui-form-label"
-                    >验证码</label>
-                    <div class="layui-input-inline">
-                      <input
-                        id="vercode"
-                        v-model="vercode"
-                        type="text"
-                        name="vercode"
-                        placeholder="请输入验证码"
-                        autocomplete="off"
-                        class="layui-input"
-                      >
-                    </div>
-                    <div
-                      class="layui-form-mid vercode"
-                      @click="getCaptcha"
-                    >
-                      <span
-                        style="color: #c00;"
-                        v-html="svg"
-                      />
-                    </div>
-                    <div
-                      v-show="errors[0]"
-                      class="error"
-                    >
-                      {{ errors[0] }}
-                    </div>
-                  </div>
-                </validation-provider>
-                <div class="layui-form-item">
-                  <button
-                    class="layui-btn"
-                    alert="1"
-                    lay-filter="*"
-                    lay-submit
+                  <div
+                    v-show="errors[0]"
+                    class="error"
                   >
-                    提交
-                  </button>
+                    {{ errors[0] }}
+                  </div>
                 </div>
-              </form>
+              </validation-provider>
+              <validation-provider
+                v-slot="{errors}"
+                rules="required|length:4"
+              >
+                <div :class="['layui-form-item', {'no-margin': errors[0]}]">
+                  <label
+                    for="vercode"
+                    class="layui-form-label"
+                  >验证码</label>
+                  <div class="layui-input-inline">
+                    <input
+                      id="vercode"
+                      v-model="vercode"
+                      type="text"
+                      name="vercode"
+                      placeholder="请输入验证码"
+                      autocomplete="off"
+                      class="layui-input"
+                    >
+                  </div>
+                  <div
+                    class="layui-form-mid vercode"
+                    @click="getCaptcha"
+                  >
+                    <span
+                      style="color: #c00;"
+                      v-html="svg"
+                    />
+                  </div>
+                  <div
+                    v-show="errors[0]"
+                    class="error"
+                  >
+                    {{ errors[0] }}
+                  </div>
+                </div>
+              </validation-provider>
+              <div class="layui-form-item">
+                <button
+                  class="layui-btn"
+                  lay-filter="*"
+                  @click="submit"
+                >
+                  提交
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -150,7 +147,8 @@
 </template>
 
 <script>
-import { getCaptcha } from '@/api/login'
+import { getCaptcha } from '@/api/common'
+import { forgetPass } from '@/api/login'
 import { ValidationProvider } from 'vee-validate'
 export default {
   components: {
@@ -171,6 +169,15 @@ export default {
       const response = await getCaptcha()
       if (response.status === 200) {
         this.svg = response.data.data
+      }
+    },
+    async submit () {
+      const response = await forgetPass({
+        user: this.username,
+        vercode: this.vercode
+      })
+      if (response.status === 200 && response.data.code === 1) {
+        alert(response.data.msg)
       }
     }
   }

@@ -156,7 +156,7 @@
 </template>
 
 <script>
-import { getCaptcha } from '@/api/login'
+import { getCaptcha } from '@/api/common'
 import { ValidationProvider } from 'vee-validate'
 export default {
   components: {

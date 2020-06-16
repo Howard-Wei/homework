@@ -1,6 +1,6 @@
 export default {
-  user: 'whw1990126@126.com',
-  pass: 'GTWGYQHHWLTGSJJG',
+  user: '',
+  pass: '',
   replyPassTemplate: (sendInfo, url) => `
     <div style="border: 1px solid #dcdcdc;color: #676767;width: 600px; margin: 0 auto; padding-bottom: 50px;position: relative;">
       <div style="height: 60px; background: #393d49; line-height: 60px; color: #58a36f; font-size: 18px;padding-left: 10px;">Imooc社区——欢迎来到官方社区</div>
